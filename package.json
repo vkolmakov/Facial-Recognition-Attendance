@@ -1,6 +1,6 @@
 {
-  "name": "ipro-prototype",
-  "description": "An IPRO project prototype",
+  "name": "web-attendance",
+  "description": "IPRO project",
   "author": "vkolmakov <vkolmakov@hotmail.com>",
   "private": true,
   "scripts": {
@@ -8,7 +8,10 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "vue": "^2.0.1"
+    "rxjs": "^5.0.0-rc.2",
+    "vue": "^2.0.1",
+    "vue-rx": "^2.0.0",
+    "vue-webcam": "^2.0.4"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

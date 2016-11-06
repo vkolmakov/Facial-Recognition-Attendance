@@ -1,60 +1,114 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://gitter.im/vuejs/vue" target="_blank">Gitter Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
+  <div @click="resetIdentityMessage" id="app">
+    <div class="camera-wrap">
+      <vue-webcam ref='webcam'></vue-webcam>
+      <button class="sign-in-button" @click="signIn">Sign In</button>
+    </div>
+
+    <div class="identity">
+      {{ identityMessage }}
+    </div>
+
+    <div class="add-person">
+      <input v-model="newPersonName" type="text" />
+      <button class="add-person-button" @click="addPerson">Add Person</button>
+    </div>
+
+    <div class="training">
+      <select v-model="selectedPersonName">
+        <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
+      </select>
+      <button class="start-training-button" @click="startTraining">Start Training</button>
+    </div>
+
+    <ul class="persons">
+      <li v-for="p in persons">{{ p.name }}</li>
     </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+
   </div>
-</template>
+  </template>
 
 <script>
+import VueWebcam from 'vue-webcam'
+import { identity$, train, recognize, addPerson } from './faceRecognition'
+
 export default {
   name: 'app',
+
+  components: {
+    VueWebcam,
+  },
+
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      persons: [],
+      newPersonName: '',
+      selectedPersonName: '',
+    }
+  },
+
+  subscriptions () {
+    return {
+      identityMessage: identity$
+        .map(id => this.persons.find(p => p.id === id))
+        .map(person => person ? `Welcome, ${person.name}!` : `Please try again`)
+    }
+  },
+
+  methods: {
+    resetIdentityMessage () {
+      this.identityMessage = ''
+    },
+
+    addPerson () {
+      const persons = this.persons
+      const person = { name: this.newPersonName, id: persons.length }
+
+      this.newPersonName = ''
+      this.persons = persons.concat([person])
+      this.selectedPersonName = person.name
+
+      addPerson({ name: person.name })
+    },
+
+    startTraining () {
+      const person = this.persons.find(p => p.name === this.selectedPersonName)
+      train({ getPhoto: this.$refs.webcam.getPhoto, id: person.id })
+    },
+
+    signIn () {
+      const photo = this.$refs.webcam.getPhoto()
+      recognize({ photo })
     }
   }
 }
-</script>
+  </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+  }
 
-h1, h2 {
-  font-weight: normal;
-}
+  h1, h2 {
+    font-weight: normal;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  li {
+    display: inline-block;
+    margin: 0 10px;
+  }
 
-a {
-  color: #42b983;
-}
-</style>
+  a {
+    color: #42b983;
+  }
+  </style>
