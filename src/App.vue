@@ -1,10 +1,7 @@
 <template>
   <div @click="resetIdentityMessage" id="app">
-    <div class="camera-wrap">
-      <vue-webcam ref='webcam'></vue-webcam>
-      <button class="sign-in-button" @click="signIn">Sign In</button>
-    </div>
-
+    <vue-webcam ref='webcam'></vue-webcam>
+    <button class="sign-in-button" @click="signIn">Sign In</button>
     <div class="identity">
       {{ identityMessage }}
     </div>
@@ -21,12 +18,12 @@
       <button class="start-training-button" @click="startTraining">Start Training</button>
     </div>
 
-    <ul class="persons">
-      <li v-for="p in persons">{{ p.name }}</li>
-    </ul>
+    <div class="progress">
+      {{this.training}}
+    </div>
 
   </div>
-  </template>
+</template>
 
 <script>
 import VueWebcam from 'vue-webcam'
@@ -44,6 +41,10 @@ export default {
       persons: [],
       newPersonName: '',
       selectedPersonName: '',
+      training: {
+        status: false,
+        progress: 0,
+      }
     }
   },
 
@@ -73,7 +74,16 @@ export default {
 
     startTraining () {
       const person = this.persons.find(p => p.name === this.selectedPersonName)
-      train({ getPhoto: this.$refs.webcam.getPhoto, id: person.id })
+
+      const getPhoto = this.$refs.webcam.getPhoto
+      const onStart = () => this.training.status = true
+      const onProgress = (next) => this.training.progress = next
+      const onComplete = () => {
+        this.training.progress = 0
+        this.training.status = false
+      }
+
+      train({ id: person.id, getPhoto, onStart, onProgress, onComplete })
     },
 
     signIn () {
@@ -82,16 +92,29 @@ export default {
     }
   }
 }
-  </script>
+</script>
 
 <style>
-#app {
+  body {
+    margin: 0;
+    background-color: black;
+  }
+
+  #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
+  }
+
+  video {
+    position: absolute;
+    z-index: -1;
+    width: 800px;
+    height: 600px;
+  }
+
+  .progress {
+    background-color: white
   }
 
   h1, h2 {
@@ -111,4 +134,4 @@ export default {
   a {
     color: #42b983;
   }
-  </style>
+</style>

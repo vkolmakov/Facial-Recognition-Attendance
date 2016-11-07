@@ -36,7 +36,7 @@ export const recognize = ({ photo }) => new Promise((resolve, reject) => {
   socket.send(JSON.stringify(msg))
 })
 
-export const train = ({ id, getPhoto }) => {
+export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
   const NUM_MESSAGES = 5
   const INTERVAL = 2000
 
@@ -47,6 +47,7 @@ export const train = ({ id, getPhoto }) => {
     val: true,
   }
 
+  onStart()
   socket.send(JSON.stringify(startMsg))
 
   Rx.Observable.interval(INTERVAL)
@@ -59,6 +60,8 @@ export const train = ({ id, getPhoto }) => {
           identity: id,
         }
 
+        onProgress(currentMessage / NUM_MESSAGES)
+
         // the n+1th message is not sent to give some time
         // to process the nth message and turn off the training flag
         if (currentMessage < NUM_MESSAGES)
@@ -70,6 +73,7 @@ export const train = ({ id, getPhoto }) => {
           val: false
         }
         socket.send(JSON.stringify(endMsg))
+        onComplete()
       }
     })
 }
