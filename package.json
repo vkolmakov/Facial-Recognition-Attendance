@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --inline --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "start-server": "./build/start-server.sh"
   },
   "dependencies": {
     "rxjs": "^5.0.0-rc.2",
