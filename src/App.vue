@@ -1,25 +1,30 @@
 <template>
   <div @click="resetIdentityMessage" id="app">
-    <vue-webcam ref='webcam'></vue-webcam>
-    <button class="sign-in-button" @click="signIn">Sign In</button>
-    <div class="identity">
-      {{ identityMessage }}
-    </div>
 
-    <div class="add-person">
+    <vue-webcam ref='webcam'></vue-webcam>
+
+    <div class="training-container">
       <input v-model="newPersonName" type="text" />
       <button class="add-person-button" @click="addPerson">Add Person</button>
-    </div>
 
-    <div class="training">
       <select v-model="selectedPersonName">
         <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
       </select>
-      <button class="start-training-button" @click="startTraining">Start Training</button>
+      <button class="start-training-button" @click="startTraining">Start Training</button>      
     </div>
 
-    <div class="progress">
-      {{this.training}}
+    <div class="message-container">
+      <div v-if="identityMessage" class="identity">
+        {{ identityMessage }}
+      </div>
+
+      <div v-if="training.status" class="progress">
+        {{ training }}
+      </div>
+    </div>
+
+    <div class="signin-container">
+      <button class="signin-button" @click="signIn">Sign In</button>    
     </div>
 
   </div>
@@ -100,12 +105,6 @@ export default {
     background-color: black;
   }
 
-  #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
   video {
     position: absolute;
     z-index: -1;
@@ -113,25 +112,36 @@ export default {
     height: 600px;
   }
 
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+
+    max-width: 800px;
+    min-height: 600px;
+  }
+
+  .training-container {
+    flex: 1;
+  }
+
+  .message-container {
+    color: white;
+    flex: 5;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+  }
+
+  .signin-container {
+    flex: 1;
+  }
+
   .progress {
-    background-color: white
-  }
-
-  h1, h2 {
-    font-weight: normal;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
-  a {
-    color: #42b983;
+    background-color: black;
   }
 </style>
