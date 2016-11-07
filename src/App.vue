@@ -66,6 +66,11 @@ export default {
       this.identityMessage = ''
     },
 
+    getPhoto () {
+      const photo = this.$refs.webcam.getPhoto()
+      return photo
+    },
+
     addPerson () {
       const persons = this.persons
       const person = { name: this.newPersonName, id: persons.length }
@@ -80,7 +85,7 @@ export default {
     startTraining () {
       const person = this.persons.find(p => p.name === this.selectedPersonName)
 
-      const getPhoto = this.$refs.webcam.getPhoto
+      const getPhoto = this.getPhoto
       const onStart = () => this.training.status = true
       const onProgress = (next) => this.training.progress = next
       const onComplete = () => {
@@ -92,7 +97,8 @@ export default {
     },
 
     signIn () {
-      const photo = this.$refs.webcam.getPhoto()
+      const photo = this.getPhoto()
+
       recognize({ photo })
     }
   }
@@ -125,11 +131,15 @@ export default {
 
   .training-container {
     flex: 1;
+
+    display: flex;
+
+    align-items: center;
   }
 
   .message-container {
     color: white;
-    flex: 5;
+    flex: 10;
 
     display: flex;
 
@@ -139,6 +149,11 @@ export default {
 
   .signin-container {
     flex: 1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
   }
 
   .progress {
