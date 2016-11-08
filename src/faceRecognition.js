@@ -60,7 +60,8 @@ export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
           identity: id,
         }
 
-        onProgress(currentMessage / NUM_MESSAGES)
+        // update to n + 1 because n is zero-based
+        onProgress((currentMessage + 1) / NUM_MESSAGES)
 
         // the n+1th message is not sent to give some time
         // to process the nth message and turn off the training flag
