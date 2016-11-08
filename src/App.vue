@@ -18,8 +18,8 @@
         {{ identityMessage }}
       </div>
 
-      <div v-if="training.status" class="progress">
-        {{ training }}
+      <div v-if="training.status">
+        <progress class="progress" max="1" :value="training.progress"></progress>
       </div>
     </div>
 
@@ -154,9 +154,16 @@ body {
     font-weight: 500;
   }
 
-  .message > .progress {
-    color: white;
-    background-color: black;
+  .message > * > .progress {
+    -webkit-appearance: none;
+  }
+
+  .message > * > .progress::-webkit-progress-value {
+    transition: width 1s ease-out;
+  }
+
+  .message > * > .progress::-webkit-progress-bar {
+    background: #fafafa;
   }
 
   .signin {
