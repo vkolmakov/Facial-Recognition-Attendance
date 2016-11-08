@@ -1,11 +1,11 @@
 import Rx from 'rxjs/Rx'
 
-import { getSocket, messageTypes, socketMessages$ } from './socket'
+import { socket, messageTypes } from './socket'
 import { getDataURLFromRGB } from './util'
 import { Image, Person, dropAll } from './db'
 
 
-export const identity$ = socketMessages$
+export const identity$ = socket.socketMessages$()
   .filter(message => message.type === messageTypes.IDENTITIES)
   .map(message => {
     const recognizedPersonId =
@@ -16,7 +16,7 @@ export const identity$ = socketMessages$
     return recognizedPersonId
   })
 
-export const image$ = socketMessages$
+export const image$ = socket.socketMessages$()
   .filter(message => message.type == messageTypes.NEW_IMAGE)
   .map(message => ({
     image: getDataURLFromRGB(message.content),
@@ -27,7 +27,7 @@ export const image$ = socketMessages$
   // save incomming images to db
   .subscribe(image => Image.save(image))
 
-export const state$ = Rx.Observable.fromEvent(getSocket(), 'open')
+export const state$ = socket.socketOpen$()
   .flatMap(_ => getInitialState())
   .map(([images, persons]) => {
     // send the initial state when socket is opened
@@ -38,34 +38,28 @@ export const state$ = Rx.Observable.fromEvent(getSocket(), 'open')
 
 
 export const savePerson = ({ name, id }) => {
-  const socket = getSocket()
-
   const msg = {
     type: messageTypes.ADD_PERSON,
     val: name,
   }
 
-  Person.save({ name, id })
-  socket.send(JSON.stringify(msg))
+  return Promise.all([Person.save({ name, id }),
+                      socket.send(JSON.stringify(msg))])
 }
 
 export const recognize = ({ photo }) => new Promise((resolve, reject) => {
-  const socket = getSocket()
-
   const msg = {
     type: messageTypes.FRAME,
     dataURL: photo,
     identity: null,
   }
 
-  socket.send(JSON.stringify(msg))
+  return socket.send(JSON.stringify(msg))
 })
 
 export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
   const NUM_MESSAGES = 5
   const INTERVAL = 2000
-
-  const socket = getSocket()
 
   const startMsg = {
     type: messageTypes.TRAINING,
@@ -106,13 +100,12 @@ export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
 
 export const dropState = () => {
   return dropAll()
+    .then(_ => socket.close())
 }
 
 export const getInitialState = () => Promise.all([Image.getAll(), Person.getAll()])
 
 export const sendInitialState = (images = [], persons = [], training = false) => {
-  const socket = getSocket()
-
   const msg = {
     type: messageTypes.ALL_STATE,
     images,
