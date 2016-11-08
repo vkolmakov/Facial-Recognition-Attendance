@@ -4,14 +4,18 @@
     <vue-webcam ref='webcam'></vue-webcam>
 
     <div class="training flex-container">
-      <input v-model="newPersonName" placeholder="Enter a name" type="text" class="input text" />
-      <button class="button add-person" @click="addPerson">Add Person</button>
+      <i :class="['fa fa-lg icon', showMenu ? 'fa-times' : 'fa-bars']" aria-hidden="true" @click="toggleMenu"></i>
 
-      <select v-model="selectedPersonName" class="input select">
-        <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
-      </select>
-      <button class="button start-training" @click="startTraining">Start Training</button>
-      <button class="button drop-state" @click="dropState">Drop State</button>
+      <template v-if="showMenu">
+        <input v-model="newPersonName" placeholder="Enter a name" type="text" class="input text" />
+        <button class="button add-person" @click="addPerson">Add Person</button>
+
+        <select v-model="selectedPersonName" class="input select">
+          <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
+        </select>
+        <button class="button start-training" @click="startTraining">Start Training</button>
+        <button class="button drop-state" @click="dropState">Drop State</button>
+      </template>
     </div>
 
     <div class="message flex-container">
@@ -51,6 +55,7 @@ export default {
         status: false,
         progress: 0,
       },
+      showMenu: false,
     }
   },
 
@@ -75,13 +80,18 @@ export default {
       this.identityMessage = ''
     },
 
+    toggleMenu () {
+      const prev = this.showMenu
+      this.showMenu = !prev
+    },
+
     getPhoto () {
       const photo = this.$refs.webcam.getPhoto()
       return photo
     },
 
     dropState () {
-      dropState().then(_ => location.reload())
+      dropState().then(_ => location.reload()) // reload the page after state was dropped
     },
 
     addPerson () {
@@ -146,16 +156,32 @@ body {
     display: flex;
   }
 
-  .flex-container .training {
-    flex: 1;
+  .flex-container.training {
+    flex: 0 0 50px;
     align-items: center;
   }
 
-  .flex-container .training > button:last-child{
-    margin: 0 35px 0 auto;
+  .flex-container.training > .icon {
+    color: #fff;
+    margin-left: 10px;
   }
 
-  .flex-container .message {
+  .flex-container.training > .input {
+    margin-left: 15px;
+  }
+
+  .flex-container.training > button {
+    margin-left: 1px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #3aabd0;
+  }
+
+  .flex-container.training > button:last-child{
+    margin: 0 10px 0 auto;
+  }
+
+  .flex-container.message {
     flex: 0 0 425px;
     align-items: center;
     justify-content: center;
@@ -183,10 +209,24 @@ body {
     background: #fafafa;
   }
 
-  .flex-container .sign-in {
+  .flex-container.sign-in {
     flex: 1;
     align-items: center;
     justify-content: center;
+  }
+
+  .flex-container.sign-in > .button {
+    background-color: #55c875;
+    color: #fff;
+
+    border: 1px solid #fff;
+    border-radius: 10px;
+
+    height: 50px;
+    width: 300px;
+
+    font-size: 1.2em;
+    font-weight: 600;
   }
 
   .input {
@@ -197,10 +237,17 @@ body {
     width: 150px;
 
     padding: 0 5px;
-    margin-left: 35px;
     border: none;
 
     background-color: #fff;
+  }
+
+  .input.select {
+    -webkit-appearance: none;
+    border-radius: 0;
+    background: url('assets/br_down.png') no-repeat;
+    background-color: #fff;
+    background-position: 122px 10px; /* ah, the magic numbers! */
   }
 
   .button {
@@ -210,7 +257,8 @@ body {
     width: 60px;
 
     padding: 0;
-    margin-left: 1px;
+    border: none;
+
   }
 
 </style>
