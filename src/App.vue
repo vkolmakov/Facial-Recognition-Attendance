@@ -81,10 +81,7 @@ export default {
     },
 
     dropState () {
-      dropState().then(_ => {
-        this.persons = []
-        this.selectedPersonName = ''
-      })
+      dropState().then(_ => location.reload())
     },
 
     addPerson () {
