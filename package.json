@@ -9,6 +9,7 @@
     "start-server": "./build/start-server.sh"
   },
   "dependencies": {
+    "pouchdb": "^6.0.7",
     "rxjs": "^5.0.0-rc.2",
     "vue": "^2.0.1",
     "vue-rx": "^2.0.0",

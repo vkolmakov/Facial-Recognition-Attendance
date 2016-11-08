@@ -1,3 +1,14 @@
+const assign = (obj, key, val) => {
+  obj[key] = val
+  return obj
+}
+
+export const getOnly = (obj, ...props) => (
+  Object.keys(obj).filter(prop => props.includes(prop)).reduce((acc, curr) => (
+     assign(acc, curr, obj[curr])
+  ), {})
+)
+
 export const getDataURLFromRGB = (rgb) => {
   const canvas = document.createElement('canvas')
   canvas.width = 96
@@ -18,4 +29,3 @@ export const getDataURLFromRGB = (rgb) => {
 
   return canvas.toDataURL('image/png')
 }
-
