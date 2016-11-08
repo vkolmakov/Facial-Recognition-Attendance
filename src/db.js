@@ -2,8 +2,8 @@ import PouchDB from 'pouchdb'
 
 import { getOnly } from './util'
 
-const images = new PouchDB('FaceRecognition:images')
-const persons = new PouchDB('FaceRecognition:persons')
+let images = new PouchDB('FaceRecognition:images')
+let persons = new PouchDB('FaceRecognition:persons')
 
 export const Image = {
   getAll () {
@@ -31,5 +31,11 @@ export const Person = {
   }
 }
 
-export const dropAll = () => [images.destroy(), persons.destroy()]
+export const dropAll = () => {
+  return Promise.all([images.destroy(), persons.destroy()])
+    .then(_ => {
+      images = new PouchDB('FaceRecognition:images')
+      persons = new PouchDB('FaceRecognition:persons')
+    })
+}
 

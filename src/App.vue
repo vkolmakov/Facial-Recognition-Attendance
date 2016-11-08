@@ -11,6 +11,7 @@
         <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
       </select>
       <button class="button start-training" @click="startTraining">Start Training</button>
+      <button class="button drop-state" @click="dropState">Drop State</button>
     </div>
 
     <div class="message flex-container">
@@ -32,7 +33,7 @@
 
 <script>
 import VueWebcam from 'vue-webcam'
-import { identity$, image$, state$, train, recognize, savePerson } from './faceRecognition'
+import { identity$, image$, state$, train, recognize, savePerson, dropState } from './faceRecognition'
 
 export default {
   name: 'app',
@@ -77,6 +78,13 @@ export default {
     getPhoto () {
       const photo = this.$refs.webcam.getPhoto()
       return photo
+    },
+
+    dropState () {
+      dropState().then(_ => {
+        this.persons = []
+        this.selectedPersonName = ''
+      })
     },
 
     addPerson () {
@@ -144,6 +152,10 @@ body {
   .flex-container .training {
     flex: 1;
     align-items: center;
+  }
+
+  .flex-container .training > button:last-child{
+    margin: 0 35px 0 auto;
   }
 
   .flex-container .message {

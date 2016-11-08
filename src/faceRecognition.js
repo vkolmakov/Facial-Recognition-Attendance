@@ -2,7 +2,7 @@ import Rx from 'rxjs/Rx'
 
 import { getSocket, messageTypes, socketMessages$ } from './socket'
 import { getDataURLFromRGB } from './util'
-import { Image, Person } from './db'
+import { Image, Person, dropAll } from './db'
 
 
 export const identity$ = socketMessages$
@@ -85,7 +85,7 @@ export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
           identity: id,
         }
 
-        // update to n + 1 because n is zero-based
+        // update to n+1 because n is zero-based
         onProgress((currentMessage + 1) / NUM_MESSAGES)
 
         // the n+1th message is not sent to give some time
@@ -102,6 +102,10 @@ export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
         onComplete()
       }
     })
+}
+
+export const dropState = () => {
+  return dropAll()
 }
 
 export const getInitialState = () => Promise.all([Image.getAll(), Person.getAll()])
