@@ -59,7 +59,13 @@ export default {
         .map(id => this.persons.find(p => p.id === id))
         .map(person => person ? `Welcome, ${person.name}!` : `Please try again`),
 
-      initialState: state$.map(s => this.persons = s.persons),
+      initialState: state$.map(s => {
+        this.persons = s.persons
+
+        this.selectedPersonName = s.persons.length > 0
+          ? s.persons[0].name
+          : ''
+      }),
     }
   },
 
