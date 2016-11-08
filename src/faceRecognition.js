@@ -2,6 +2,8 @@ import Rx from 'rxjs/Rx'
 
 import { getSocket, messageTypes, socketMessages$ } from './socket'
 import { getDataURLFromRGB } from './util'
+import { Image, Person } from './db'
+
 
 export const identity$ = socketMessages$
   .filter(message => message.type === messageTypes.IDENTITIES)
@@ -22,11 +24,20 @@ export const image$ = socketMessages$
     representation: message.representation,
     identity: message.identity,
   }))
+  // save incomming images to db
+  .subscribe(image => Image.save(image))
 
 export const state$ = Rx.Observable.fromEvent(getSocket(), 'open')
-  .subscribe(_ => sendInitialState())
+  .flatMap(_ => getInitialState())
+  .map(([images, persons]) => {
+    // send the initial state when socket is opened
+    sendInitialState(images, persons)
+    // and send the state to the front
+    return { images, persons }
+  })
 
-export const addPerson = ({ name }) => {
+
+export const savePerson = ({ name, id }) => {
   const socket = getSocket()
 
   const msg = {
@@ -34,6 +45,7 @@ export const addPerson = ({ name }) => {
     val: name,
   }
 
+  Person.save({ name, id })
   socket.send(JSON.stringify(msg))
 }
 
@@ -92,13 +104,15 @@ export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
     })
 }
 
+export const getInitialState = () => Promise.all([Image.getAll(), Person.getAll()])
+
 export const sendInitialState = (images = [], persons = [], training = false) => {
   const socket = getSocket()
 
   const msg = {
     type: messageTypes.ALL_STATE,
     images,
-    people: persons,
+    people: persons.map(p => p.id.toString()), // a list of ids, dictated by API
     training,
   }
 
