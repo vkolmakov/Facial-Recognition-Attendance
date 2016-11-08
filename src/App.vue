@@ -4,13 +4,13 @@
     <vue-webcam ref='webcam'></vue-webcam>
 
     <div class="training flex-container">
-      <input v-model="newPersonName" type="text" />
-      <button class="add-person-button" @click="addPerson">Add Person</button>
+      <input v-model="newPersonName" placeholder="Enter a name" type="text" class="input text" />
+      <button class="button add-person" @click="addPerson">Add Person</button>
 
-      <select v-model="selectedPersonName">
+      <select v-model="selectedPersonName" class="input select">
         <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
       </select>
-      <button class="start-training-button" @click="startTraining">Start Training</button>      
+      <button class="button start-training" @click="startTraining">Start Training</button>
     </div>
 
     <div class="message flex-container">
@@ -23,8 +23,8 @@
       </div>
     </div>
 
-    <div class="signin flex-container">
-      <button class="signin-button" @click="signIn">Sign In</button>    
+    <div class="sign-in flex-container">
+      <button class="button" @click="signIn">Sign In</button>
     </div>
 
   </div>
@@ -58,8 +58,8 @@ export default {
       identityMessage: identity$
         .map(id => this.persons.find(p => p.id === id))
         .map(person => person ? `Welcome, ${person.name}!` : `Please try again`),
-      state: state$.map(s => this.persons = s.persons),
 
+      initialState: state$.map(s => this.persons = s.persons),
     }
   },
 
@@ -135,12 +135,12 @@ body {
     display: flex;
   }
 
-  .training {
+  .flex-container .training {
     flex: 1;
     align-items: center;
   }
 
-  .message {
+  .flex-container .message {
     flex: 0 0 425px;
     align-items: center;
     justify-content: center;
@@ -168,9 +168,34 @@ body {
     background: #fafafa;
   }
 
-  .signin {
+  .flex-container .sign-in {
     flex: 1;
     align-items: center;
     justify-content: center;
   }
+
+  .input {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-size: 0.8em;
+
+    height: 35px;
+    width: 150px;
+
+    padding: 0 5px;
+    margin-left: 35px;
+    border: none;
+
+    background-color: #fff;
+  }
+
+  .button {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+
+    height: 35px;
+    width: 60px;
+
+    padding: 0;
+    margin-left: 1px;
+  }
+
 </style>
