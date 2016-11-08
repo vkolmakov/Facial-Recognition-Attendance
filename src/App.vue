@@ -1,9 +1,9 @@
 <template>
-  <div @click="resetIdentityMessage" id="app">
+  <div @click="resetIdentityMessage" id="app" class="flex-container">
 
     <vue-webcam ref='webcam'></vue-webcam>
 
-    <div class="training-container">
+    <div class="training flex-container">
       <input v-model="newPersonName" type="text" />
       <button class="add-person-button" @click="addPerson">Add Person</button>
 
@@ -13,7 +13,7 @@
       <button class="start-training-button" @click="startTraining">Start Training</button>      
     </div>
 
-    <div class="message-container">
+    <div class="message flex-container">
       <div v-if="identityMessage" class="identity">
         {{ identityMessage }}
       </div>
@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <div class="signin-container">
+    <div class="signin flex-container">
       <button class="signin-button" @click="signIn">Sign In</button>    
     </div>
 
@@ -49,7 +49,7 @@ export default {
       training: {
         status: false,
         progress: 0,
-      }
+      },
     }
   },
 
@@ -106,7 +106,7 @@ export default {
 </script>
 
 <style>
-  body {
+body {
     margin: 0;
     background-color: black;
   }
@@ -122,41 +122,46 @@ export default {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    display: flex;
+
     flex-direction: column;
 
     max-width: 800px;
     min-height: 600px;
   }
 
-  .training-container {
-    flex: 1;
-
+  .flex-container {
     display: flex;
+  }
 
+  .training {
+    flex: 1;
     align-items: center;
   }
 
-  .message-container {
+  .message {
+    flex: 0 0 425px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .message > * {
+    margin-top: 40%;
+  }
+
+  .message > .identity {
     color: white;
-    flex: 10;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
+    font-size: 1.8em;
+    font-weight: 500;
   }
 
-  .signin-container {
-    flex: 1;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-  }
-
-  .progress {
+  .message > .progress {
+    color: white;
     background-color: black;
+  }
+
+  .signin {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
   }
 </style>
