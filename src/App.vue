@@ -32,7 +32,7 @@
 
 <script>
 import VueWebcam from 'vue-webcam'
-import { identity$, train, recognize, addPerson } from './faceRecognition'
+import { identity$, image$, train, recognize, addPerson, sendInitialState } from './faceRecognition'
 
 export default {
   name: 'app',
@@ -50,6 +50,7 @@ export default {
         status: false,
         progress: 0,
       },
+      images: [],
     }
   },
 
@@ -57,13 +58,24 @@ export default {
     return {
       identityMessage: identity$
         .map(id => this.persons.find(p => p.id === id))
-        .map(person => person ? `Welcome, ${person.name}!` : `Please try again`)
+        .map(person => person ? `Welcome, ${person.name}!` : `Please try again`),
+
+      image: image$
+        .map(image => {
+          const prevImages = this.images
+          this.images = prevImages.concat([image])
+        }),
     }
   },
 
   methods: {
     resetIdentityMessage () {
       this.identityMessage = ''
+    },
+
+    sendState () {
+      sendInitialState(this.images.map(i => JSON.parse(JSON.stringify(i))),
+                       this.persons.map(p => JSON.parse(JSON.stringify(p.id.toString()))))
     },
 
     getPhoto () {

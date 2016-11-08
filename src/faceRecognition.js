@@ -1,8 +1,9 @@
-import { getSocket, messageTypes } from './socket'
 import Rx from 'rxjs/Rx'
 
-export const identity$ = Rx.Observable.fromEvent(getSocket(), 'message')
-  .map(event => JSON.parse(event.data))
+import { getSocket, messageTypes, socketMessages$ } from './socket'
+import { getDataURLFromRGB } from './util'
+
+export const identity$ = socketMessages$
   .filter(message => message.type === messageTypes.IDENTITIES)
   .map(message => {
     const recognizedPersonId =
@@ -12,6 +13,18 @@ export const identity$ = Rx.Observable.fromEvent(getSocket(), 'message')
 
     return recognizedPersonId
   })
+
+export const image$ = socketMessages$
+  .filter(message => message.type == messageTypes.NEW_IMAGE)
+  .map(message => ({
+    image: getDataURLFromRGB(message.content),
+    hash: message.hash,
+    representation: message.representation,
+    identity: message.identity,
+  }))
+
+export const state$ = Rx.Observable.fromEvent(getSocket(), 'open')
+  .subscribe(_ => sendInitialState())
 
 export const addPerson = ({ name }) => {
   const socket = getSocket()
@@ -77,4 +90,17 @@ export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
         onComplete()
       }
     })
+}
+
+export const sendInitialState = (images = [], persons = [], training = false) => {
+  const socket = getSocket()
+
+  const msg = {
+    type: messageTypes.ALL_STATE,
+    images,
+    people: persons,
+    training,
+  }
+
+  socket.send(JSON.stringify(msg))
 }
