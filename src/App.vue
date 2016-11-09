@@ -3,7 +3,7 @@
 
     <vue-webcam ref='webcam'></vue-webcam>
 
-    <div class="training flex-container">
+    <div class="top flex-container">
       <i :class="['fa fa-lg icon', showMenu ? 'fa-times' : 'fa-bars']" aria-hidden="true" @click="toggleMenu"></i>
 
       <template v-if="showMenu">
@@ -23,7 +23,7 @@
       <progress-bar v-if="training.status" :progress="training.progress"></progress-bar>
     </div>
 
-    <div class="sign-in flex-container">
+    <div class="bottom flex-container">
       <button class="button" @click="signIn">Sign In</button>
     </div>
 
@@ -155,32 +155,32 @@ export default {
     display: flex;
   }
 
-  .flex-container.training {
+  .flex-container.top {
     flex: 0 0 50px;
     align-items: center;
   }
 
-  .flex-container.training > .icon {
+  .flex-container.top > .icon {
     color: #fff;
     margin-left: 10px;
   }
 
-  .flex-container.training > .input {
+  .flex-container.top > .input {
     margin-left: 15px;
   }
 
-  .flex-container.training > .button {
+  .flex-container.top > .button {
     margin-left: 1px;
     font-weight: 600;
     color: #fff;
     background-color: #3aabd0;
   }
 
-  .flex-container.training > .button.destructive {
+  .flex-container.top > .button.destructive {
     background-color: #fba49e;
   }
 
-  .flex-container.training > button:last-child{
+  .flex-container.top > button:last-child{
     margin: 0 10px 0 auto;
   }
 
@@ -194,13 +194,13 @@ export default {
     margin-top: 40%;
   }
 
-  .flex-container.sign-in {
+  .flex-container.bottom {
     flex: 1;
     align-items: center;
     justify-content: center;
   }
 
-  .flex-container.sign-in > .button {
+  .flex-container.bottom > .button {
     background-color: #55c875;
     color: #fff;
 
