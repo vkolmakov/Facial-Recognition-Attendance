@@ -18,13 +18,9 @@
       </template>
     </div>
 
-    <div class="message flex-container">
-
+    <div class="center flex-container">
       <identity-message v-if="identityMessage" :message="identityMessage"/>
-
-      <div v-if="training.status">
-        <progress class="progress" max="1" :value="training.progress"></progress>
-      </div>
+      <progress-bar v-if="training.status" :progress="training.progress"></progress-bar>
     </div>
 
     <div class="sign-in flex-container">
@@ -37,6 +33,7 @@
 <script>
 import VueWebcam from 'vue-webcam'
 import IdentityMessage from './components/IdentityMessage.vue'
+import ProgressBar from './components/ProgressBar.vue'
 import { identity$, image$, state$, train, recognize, savePerson, dropState } from './faceRecognition'
 
 export default {
@@ -45,6 +42,7 @@ export default {
   components: {
     VueWebcam,
     IdentityMessage,
+    ProgressBar,
   },
 
   data () {
@@ -130,7 +128,7 @@ export default {
 </script>
 
 <style>
-body {
+  body {
     margin: 0;
     background-color: black;
   }
@@ -186,26 +184,14 @@ body {
     margin: 0 10px 0 auto;
   }
 
-  .flex-container.message {
+  .flex-container.center {
     flex: 0 0 425px;
     align-items: center;
     justify-content: center;
   }
 
-  .message > * {
+  .center > * {
     margin-top: 40%;
-  }
-
-  .message > * > .progress {
-    -webkit-appearance: none;
-  }
-
-  .message > * > .progress::-webkit-progress-value {
-    transition: width 1s ease-out;
-  }
-
-  .message > * > .progress::-webkit-progress-bar {
-    background: #fafafa;
   }
 
   .flex-container.sign-in {
@@ -257,7 +243,5 @@ body {
 
     padding: 0;
     border: none;
-
   }
-
 </style>

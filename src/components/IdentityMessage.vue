@@ -11,9 +11,9 @@
 </script>
 
 <style scoped>
-div {
-  color: white;
-  font-size: 1.8em;
-  font-weight: 500;
-}
+  div {
+    color: white;
+    font-size: 1.8em;
+    font-weight: 500;
+  }
 </style>
