@@ -20,11 +20,12 @@
 
     <div class="center flex-container">
       <identity-message v-if="identityMessage" :message="identityMessage"/>
-      <progress-bar v-if="training.status" :progress="training.progress"></progress-bar>
     </div>
 
     <div class="bottom flex-container">
-      <sign-in-button :onClick="signIn"></sign-in-button>
+      <progress-bar v-if="training.status" :progress="training.progress"></progress-bar>
+      <sign-in-button v-else :onClick="signIn"></sign-in-button>
+
     </div>
 
   </div>
