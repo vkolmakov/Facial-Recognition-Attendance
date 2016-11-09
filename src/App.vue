@@ -24,7 +24,7 @@
     </div>
 
     <div class="bottom flex-container">
-      <button class="button" @click="signIn">Sign In</button>
+      <sign-in-button :onClick="signIn"></sign-in-button>
     </div>
 
   </div>
@@ -34,6 +34,7 @@
 import VueWebcam from 'vue-webcam'
 import IdentityMessage from './components/IdentityMessage.vue'
 import ProgressBar from './components/ProgressBar.vue'
+import SignInButton from './components/SignInButton.vue'
 import { identity$, image$, state$, train, recognize, savePerson, dropState } from './faceRecognition'
 
 export default {
@@ -43,6 +44,7 @@ export default {
     VueWebcam,
     IdentityMessage,
     ProgressBar,
+    SignInButton,
   },
 
   data () {
@@ -198,20 +200,6 @@ export default {
     flex: 1;
     align-items: center;
     justify-content: center;
-  }
-
-  .flex-container.bottom > .button {
-    background-color: #55c875;
-    color: #fff;
-
-    border: 1px solid #fff;
-    border-radius: 10px;
-
-    height: 50px;
-    width: 300px;
-
-    font-size: 1.2em;
-    font-weight: 600;
   }
 
   .input {
