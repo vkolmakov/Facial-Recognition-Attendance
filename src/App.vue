@@ -8,13 +8,15 @@
 
       <template v-if="showMenu">
         <input v-model="newPersonName" placeholder="Enter a name" type="text" class="input text" />
-        <button class="button add-person" @click="addPerson">Add Person</button>
+
+        <PrimaryButton :onClick="addPerson" text="Add Person"></PrimaryButton>
 
         <select v-model="selectedPersonName" class="input select">
           <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
         </select>
-        <button class="button" @click="startTraining">Start Training</button>
-        <button class="button destructive" @click="dropState">Drop State</button>
+
+        <PrimaryButton :onClick="startTraining" text="Start Training"></PrimaryButton>
+        <PrimaryButton :onClick="dropState" text="Drop State" destructive="true"></PrimaryButton>
       </template>
     </div>
 
@@ -37,6 +39,8 @@ import IdentityMessage from './components/IdentityMessage.vue'
 import ProgressBar from './components/ProgressBar.vue'
 import SignInButton from './components/SignInButton.vue'
 import ToggleMenu from './components/ToggleMenu.vue'
+import PrimaryButton from './components/PrimaryButton.vue'
+
 import { identity$, image$, state$, train, recognize, savePerson, dropState } from './faceRecognition'
 
 export default {
@@ -47,7 +51,8 @@ export default {
     IdentityMessage,
     ProgressBar,
     SignInButton,
-    ToggleMenu
+    ToggleMenu,
+    PrimaryButton,
   },
 
   data () {
@@ -169,18 +174,8 @@ export default {
     margin-left: 15px;
   }
 
-  .flex-container.top > .button {
-    margin-left: 1px;
-    font-weight: 600;
-    color: #fff;
-    background-color: #3aabd0;
-  }
-
-  .flex-container.top > .button.destructive {
-    background-color: #fba49e;
-  }
-
   .flex-container.top > button:last-child{
+    /* This selector targets Drop State button */
     margin: 0 10px 0 auto;
   }
 
@@ -219,15 +214,5 @@ export default {
     background: url('assets/br_down.png') no-repeat;
     background-color: #fff;
     background-position: 122px 10px; /* ah, the magic numbers! */
-  }
-
-  .button {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-
-    height: 35px;
-    width: 60px;
-
-    padding: 0;
-    border: none;
   }
 </style>

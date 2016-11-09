@@ -1,5 +1,5 @@
 <template>
-  <button class="button" @click="onClick">Sign In</button>
+  <button @click="onClick">Sign In</button>
 </template>
 
 <script>
@@ -10,6 +10,10 @@
 
 <style scoped>
   button {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-size: 1.2em;
+    font-weight: 600;
+
     background-color: #55c875;
     color: #fff;
 
@@ -18,8 +22,5 @@
 
     height: 50px;
     width: 300px;
-
-    font-size: 1.2em;
-    font-weight: 600;
   }
 </style>
