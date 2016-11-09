@@ -13,15 +13,14 @@
         <select v-model="selectedPersonName" class="input select">
           <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
         </select>
-        <button class="button start-training" @click="startTraining">Start Training</button>
-        <button class="button drop-state" @click="dropState">Drop State</button>
+        <button class="button" @click="startTraining">Start Training</button>
+        <button class="button destructive" @click="dropState">Drop State</button>
       </template>
     </div>
 
     <div class="message flex-container">
-      <div v-if="identityMessage" class="identity">
-        {{ identityMessage }}
-      </div>
+
+      <identity-message v-if="identityMessage" :message="identityMessage"/>
 
       <div v-if="training.status">
         <progress class="progress" max="1" :value="training.progress"></progress>
@@ -37,6 +36,7 @@
 
 <script>
 import VueWebcam from 'vue-webcam'
+import IdentityMessage from './components/IdentityMessage.vue'
 import { identity$, image$, state$, train, recognize, savePerson, dropState } from './faceRecognition'
 
 export default {
@@ -44,6 +44,7 @@ export default {
 
   components: {
     VueWebcam,
+    IdentityMessage,
   },
 
   data () {
@@ -170,11 +171,15 @@ body {
     margin-left: 15px;
   }
 
-  .flex-container.training > button {
+  .flex-container.training > .button {
     margin-left: 1px;
     font-weight: 600;
     color: #fff;
     background-color: #3aabd0;
+  }
+
+  .flex-container.training > .button.destructive {
+    background-color: #fba49e;
   }
 
   .flex-container.training > button:last-child{
@@ -189,12 +194,6 @@ body {
 
   .message > * {
     margin-top: 40%;
-  }
-
-  .message > .identity {
-    color: white;
-    font-size: 1.8em;
-    font-weight: 500;
   }
 
   .message > * > .progress {
