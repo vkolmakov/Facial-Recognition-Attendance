@@ -5,7 +5,7 @@ import { getDataURLFromRGB } from './util'
 import { Image, Person, dropAll } from './db'
 
 
-export const identity$ = socket.socketMessages$()
+export const identity$ = socket.socketMessages$
   .filter(message => message.type === messageTypes.IDENTITIES)
   .map(message => {
     const recognizedPersonId =
@@ -16,7 +16,7 @@ export const identity$ = socket.socketMessages$()
     return recognizedPersonId
   })
 
-export const image$ = socket.socketMessages$()
+export const image$ = socket.socketMessages$
   .filter(message => message.type == messageTypes.NEW_IMAGE)
   .map(message => ({
     image: getDataURLFromRGB(message.content),
@@ -27,7 +27,7 @@ export const image$ = socket.socketMessages$()
   // save incomming images to db
   .subscribe(image => Image.save(image))
 
-export const state$ = socket.socketOpen$()
+export const state$ = socket.socketOpen$
   .flatMap(_ => getInitialState())
   .map(([images, persons]) => {
     // send the initial state when socket is opened

@@ -18,10 +18,6 @@ class Socket {
     this.socket.binaryType = 'arraybuffer'
   }
 
-  address() {
-    return this.address
-  }
-
   send (msg) {
     return Promise.resolve(this.socket.send(msg))
   }
@@ -30,17 +26,17 @@ class Socket {
     return Promise.resolve(this.socket.close())
   }
 
-  getSource () {
+  get _source () {
     return this.socket
   }
 
-  socketMessages$ () {
-    return Rx.Observable.fromEvent(this.getSource(), 'message')
+  get socketMessages$ () {
+    return Rx.Observable.fromEvent(this._source, 'message')
       .map(event => JSON.parse(event.data))
   }
 
-  socketOpen$ (){
-    return Rx.Observable.fromEvent(this.getSource(), 'open')
+  get socketOpen$ () {
+    return Rx.Observable.fromEvent(this._source, 'open')
   }
 }
 
