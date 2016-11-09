@@ -4,7 +4,7 @@
     <vue-webcam ref='webcam'></vue-webcam>
 
     <div class="top flex-container">
-      <i :class="['fa fa-lg icon', showMenu ? 'fa-times' : 'fa-bars']" aria-hidden="true" @click="toggleMenu"></i>
+      <toggle-menu :onClick="toggleMenu" :isShown="showMenu"></toggle-menu>
 
       <template v-if="showMenu">
         <input v-model="newPersonName" placeholder="Enter a name" type="text" class="input text" />
@@ -35,6 +35,7 @@ import VueWebcam from 'vue-webcam'
 import IdentityMessage from './components/IdentityMessage.vue'
 import ProgressBar from './components/ProgressBar.vue'
 import SignInButton from './components/SignInButton.vue'
+import ToggleMenu from './components/ToggleMenu.vue'
 import { identity$, image$, state$, train, recognize, savePerson, dropState } from './faceRecognition'
 
 export default {
@@ -45,6 +46,7 @@ export default {
     IdentityMessage,
     ProgressBar,
     SignInButton,
+    ToggleMenu
   },
 
   data () {
@@ -160,11 +162,6 @@ export default {
   .flex-container.top {
     flex: 0 0 50px;
     align-items: center;
-  }
-
-  .flex-container.top > .icon {
-    color: #fff;
-    margin-left: 10px;
   }
 
   .flex-container.top > .input {
