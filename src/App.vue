@@ -6,18 +6,22 @@
     <div class="top flex-container">
       <toggle-menu :onClick="toggleMenu" :isShown="showMenu"></toggle-menu>
 
-      <template v-if="showMenu">
-        <input v-model="newPersonName" placeholder="Enter a name" type="text" class="input text" />
+      <transition enter-active-class="animated fadeInRight"
+                  leave-active-class="animated fadeOutRight">
+        <div class="flex-container" v-if="showMenu">
+          <input v-model="newPersonName" placeholder="Enter a name" type="text" class="input text" />
 
-        <PrimaryButton :onClick="addPerson" text="Add Person"></PrimaryButton>
+          <PrimaryButton :onClick="addPerson" text="Add Person"></PrimaryButton>
 
-        <select v-model="selectedPersonName" class="input select">
-          <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
-        </select>
+          <select v-model="selectedPersonName" class="input select">
+            <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
+          </select>
 
-        <PrimaryButton :onClick="startTraining" text="Start Training"></PrimaryButton>
-        <PrimaryButton :onClick="dropState" text="Drop State" destructive="true"></PrimaryButton>
-      </template>
+          <PrimaryButton :onClick="startTraining" text="Start Training"></PrimaryButton>
+          <PrimaryButton :onClick="dropState" text="Drop State" destructive="true"></PrimaryButton>
+        </div>
+      </transition>
+
     </div>
 
     <div class="center flex-container">
@@ -136,6 +140,7 @@ export default {
 
     signIn () {
       const photo = this.getPhoto()
+      this.recognition.status = true
 
       recognize({ photo })
     }
