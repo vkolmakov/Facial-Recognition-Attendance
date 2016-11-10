@@ -7,6 +7,7 @@ import { Image, Person, dropAll } from './db'
 
 export const identity$ = socket.socketMessages$
   .filter(message => message.type === messageTypes.IDENTITIES)
+  // stream of identities
   .map(message => {
     const recognizedPersonId =
           message.identities.length > 0
@@ -18,6 +19,7 @@ export const identity$ = socket.socketMessages$
 
 export const image$ = socket.socketMessages$
   .filter(message => message.type == messageTypes.NEW_IMAGE)
+  // stream of processed images
   .map(message => ({
     image: getDataURLFromRGB(message.content),
     hash: message.hash,
@@ -28,6 +30,7 @@ export const image$ = socket.socketMessages$
   .subscribe(image => Image.save(image))
 
 export const state$ = socket.socketOpen$
+  // initial state set-up
   .flatMap(_ => getInitialState())
   .map(([images, persons]) => {
     // send the initial state when socket is opened
@@ -57,7 +60,7 @@ export const recognize = ({ photo }) => new Promise((resolve, reject) => {
   return socket.send(JSON.stringify(msg))
 })
 
-export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
+export const train = ({ id, getPhoto, onStart, onProgress, onError, onComplete }) => {
   const NUM_MESSAGES = 5
   const INTERVAL = 2000
 
@@ -87,6 +90,11 @@ export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
         if (currentMessage < NUM_MESSAGES)
           socket.send(JSON.stringify(msg))
       },
+
+      error (err) {
+        onError(`An error occurred: ${err}`)
+      },
+
       complete () {
         const endMsg = {
           type: messageTypes.TRAINING,
@@ -98,10 +106,7 @@ export const train = ({ id, getPhoto, onStart, onProgress, onComplete }) => {
     })
 }
 
-export const dropState = () => {
-  return dropAll()
-    .then(_ => socket.close())
-}
+export const dropState = () => dropAll().then(_ => socket.close())
 
 export const getInitialState = () => Promise.all([Image.getAll(), Person.getAll()])
 
@@ -109,7 +114,7 @@ export const sendInitialState = (images = [], persons = [], training = false) =>
   const msg = {
     type: messageTypes.ALL_STATE,
     images,
-    people: persons.map(p => p.id.toString()), // a list of ids, dictated by API
+    people: persons.map(p => p.id.toString()), // a list of ids, dictated by the API
     training,
   }
 

@@ -1,36 +1,37 @@
 <template>
-  <div @click="resetIdentityMessage" id="app" class="flex-container">
+  <div @click="clearMessages" id="app" class="flex-container">
 
-    <vue-webcam ref='webcam'></vue-webcam>
+    <vue-webcam ref='webcam' />
 
     <div class="top flex-container">
-      <toggle-menu :onClick="toggleMenu" :isShown="showMenu"></toggle-menu>
+      <toggle-menu :onClick="toggleMenu" :isShown="showMenu" />
 
       <transition enter-active-class="animated fadeInRight"
                   leave-active-class="animated fadeOutRight">
         <div class="flex-container" v-if="showMenu">
           <input v-model="newPersonName" placeholder="Enter a name" type="text" class="input text" />
 
-          <PrimaryButton :onClick="addPerson" text="Add Person"></PrimaryButton>
+          <PrimaryButton :onClick="addPerson" text="Add Person" />
 
           <select v-model="selectedPersonName" class="input select">
             <option v-for="p in persons" :value="p.name">{{ p.name }}</option>
           </select>
 
-          <PrimaryButton :onClick="startTraining" text="Start Training"></PrimaryButton>
-          <PrimaryButton :onClick="dropState" text="Drop State" destructive="true"></PrimaryButton>
+          <PrimaryButton :onClick="startTraining" text="Start Training" />
+          <PrimaryButton :onClick="dropState" text="Drop State" destructive="true" />
         </div>
       </transition>
 
     </div>
 
     <div class="center flex-container">
-      <identity-message v-if="recognition.identityMessage" :message="recognition.identityMessage"/>
+      <identity-message v-if="recognition.identityMessage" :message="recognition.identityMessage" />
+      <error-message v-if="errorMessage" :message="errorMessage" />
     </div>
 
     <div class="bottom flex-container">
-      <progress-bar v-if="training.status" :progress="training.progress"></progress-bar>
-      <sign-in-button v-else :onClick="signIn" :isLoading="recognition.status"></sign-in-button>
+      <progress-bar v-if="training.status" :progress="training.progress" />
+      <sign-in-button v-else :onClick="signIn" :isLoading="recognition.status" />
     </div>
 
   </div>
@@ -43,6 +44,7 @@ import ProgressBar from './components/ProgressBar.vue'
 import SignInButton from './components/SignInButton.vue'
 import ToggleMenu from './components/ToggleMenu.vue'
 import PrimaryButton from './components/PrimaryButton.vue'
+import ErrorMessage from './components/ErrorMessage.vue'
 
 import { identity$, image$, state$, train, recognize, savePerson, dropState } from './faceRecognition'
 
@@ -56,6 +58,7 @@ export default {
     SignInButton,
     ToggleMenu,
     PrimaryButton,
+    ErrorMessage,
   },
 
   data () {
@@ -72,6 +75,7 @@ export default {
         identityMessage: '',
       },
       showMenu: false,
+      errorMessage: '',
     }
   },
 
@@ -95,8 +99,9 @@ export default {
   },
 
   methods: {
-    resetIdentityMessage () {
+    clearMessages () {
       this.recognition.identityMessage = ''
+      this.errorMessage = ''
     },
 
     toggleMenu () {
@@ -128,14 +133,16 @@ export default {
       const person = this.persons.find(p => p.name === this.selectedPersonName)
 
       const getPhoto = this.getPhoto
+
       const onStart = () => this.training.status = true
       const onProgress = (next) => this.training.progress = next
+      const onError = (err) => this.errorMessage = err
       const onComplete = () => {
         this.training.progress = 0
         this.training.status = false
       }
 
-      train({ id: person.id, getPhoto, onStart, onProgress, onComplete })
+      train({ id: person.id, getPhoto, onStart, onProgress, onError, onComplete })
     },
 
     signIn () {
