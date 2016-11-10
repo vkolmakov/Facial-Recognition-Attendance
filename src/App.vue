@@ -21,13 +21,12 @@
     </div>
 
     <div class="center flex-container">
-      <identity-message v-if="identityMessage" :message="identityMessage"/>
+      <identity-message v-if="recognition.identityMessage" :message="recognition.identityMessage"/>
     </div>
 
     <div class="bottom flex-container">
       <progress-bar v-if="training.status" :progress="training.progress"></progress-bar>
-      <sign-in-button v-else :onClick="signIn"></sign-in-button>
-
+      <sign-in-button v-else :onClick="signIn" :isLoading="recognition.status"></sign-in-button>
     </div>
 
   </div>
@@ -64,15 +63,22 @@ export default {
         status: false,
         progress: 0,
       },
+      recognition: {
+        status: false,
+        identityMessage: '',
+      },
       showMenu: false,
     }
   },
 
   subscriptions () {
     return {
-      identityMessage: identity$
+      identity: identity$
         .map(id => this.persons.find(p => p.id === id))
-        .map(person => person ? `Welcome, ${person.name}!` : `Please try again`),
+        .map(person => {
+          this.recognition.status = false
+          this.recognition.identityMessage = person ? `Welcome, ${person.name}!` : `Please try again`
+        }),
 
       initialState: state$.map(s => {
         this.persons = s.persons
@@ -86,7 +92,7 @@ export default {
 
   methods: {
     resetIdentityMessage () {
-      this.identityMessage = ''
+      this.recognition.identityMessage = ''
     },
 
     toggleMenu () {
@@ -155,6 +161,7 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
+    display: flex;
     flex-direction: column;
 
     max-width: 800px;
@@ -170,11 +177,16 @@ export default {
     align-items: center;
   }
 
-  .flex-container.top > .input {
+  .flex-container.top > .flex-container {
+    /* Training menu container */
+    width: 100%;
+  }
+
+  .flex-container.top > .flex-container > .input {
     margin-left: 15px;
   }
 
-  .flex-container.top > button:last-child{
+  .flex-container.top > .flex-container > button:last-child {
     /* This selector targets Drop State button */
     margin: 0 10px 0 auto;
   }

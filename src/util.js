@@ -23,6 +23,7 @@ export const getDataURLFromRGB = (rgb) => {
     data[i+1] = rgb[t+1]
     data[i+2] = rgb[t]
     data[i+3] = 255
+    t += 3
   }
 
   ctx.putImageData(imageData, 0, 0)
