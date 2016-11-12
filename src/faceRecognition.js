@@ -1,9 +1,10 @@
 import Rx from 'rxjs/Rx'
 
-import { socket, messageTypes } from './socket'
+import { Socket, messageTypes } from './socket'
 import { getDataURLFromRGB } from './util'
 import { Image, Person, dropAll } from './db'
 
+const socket = new Socket({ address: 'ws://localhost:9000' })
 
 export const identity$ = socket.socketMessages$
   .filter(message => message.type === messageTypes.IDENTITIES)
@@ -61,8 +62,8 @@ export const recognize = ({ photo }) => new Promise((resolve, reject) => {
 })
 
 export const train = ({ id, getPhoto, onStart, onProgress, onError, onComplete }) => {
-  const NUM_MESSAGES = 5
-  const INTERVAL = 2000
+  const NUM_MESSAGES = 10
+  const INTERVAL = 1500
 
   const startMsg = {
     type: messageTypes.TRAINING,

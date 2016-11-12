@@ -6,12 +6,13 @@ export const messageTypes = {
   TRAINING: 'TRAINING',
   ADD_PERSON: 'ADD_PERSON',
   ALL_STATE: 'ALL_STATE',
+  NEW_ATTENDANCE: 'NEW_ATTENDANCE',
   // incomming
   IDENTITIES: 'IDENTITIES',
   NEW_IMAGE: 'NEW_IMAGE',
 }
 
-class Socket {
+export class Socket {
   constructor({ address }) {
     this.address = address
     this.socket = new WebSocket(address)
@@ -39,5 +40,3 @@ class Socket {
     return Rx.Observable.fromEvent(this._source, 'open')
   }
 }
-
-export const socket = new Socket({ address: 'ws://localhost:9000' })
