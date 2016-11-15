@@ -6,7 +6,7 @@ import { Image, Person, dropAll } from './db'
 
 const socket = new Socket({ address: 'ws://localhost:9000' })
 
-export const identity$ = socket.socketMessages$
+export const identity$ = socket.message$
   .filter(message => message.type === messageTypes.IDENTITIES)
   // stream of identities
   .map(message => {
@@ -18,7 +18,7 @@ export const identity$ = socket.socketMessages$
     return recognizedPersonId
   })
 
-export const image$ = socket.socketMessages$
+export const image$ = socket.message$
   .filter(message => message.type == messageTypes.NEW_IMAGE)
   // stream of processed images
   .map(message => ({
@@ -30,7 +30,7 @@ export const image$ = socket.socketMessages$
   // save incomming images to db
   .subscribe(image => Image.save(image))
 
-export const state$ = socket.socketOpen$
+export const state$ = socket.open$
   // initial state set-up
   .flatMap(_ => getInitialState())
   .map(([images, persons]) => {
@@ -39,6 +39,9 @@ export const state$ = socket.socketOpen$
     // and send the state to the front
     return { images, persons }
   })
+
+export const error$ = socket.error$
+  .map(err => `A problem occurred with face recognition socket.`)
 
 
 export const savePerson = ({ name, id }) => {

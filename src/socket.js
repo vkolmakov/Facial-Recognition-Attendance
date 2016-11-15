@@ -31,12 +31,16 @@ export class Socket {
     return this.socket
   }
 
-  get socketMessages$ () {
+  get message$ () {
     return Rx.Observable.fromEvent(this._source, 'message')
       .map(event => JSON.parse(event.data))
   }
 
-  get socketOpen$ () {
+  get open$ () {
     return Rx.Observable.fromEvent(this._source, 'open')
+  }
+
+  get error$ () {
+    return Rx.Observable.fromEvent(this._source, 'error')
   }
 }
