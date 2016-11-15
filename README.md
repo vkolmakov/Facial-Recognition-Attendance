@@ -1,18 +1,22 @@
-# IPRO prototype
+# Facial Recognition Attendance
 
-> An IPRO project prototype
+## Running
 
-## Build Setup
+This project currently depends on [openface](https://github.com/cmusatyalab/openface) and has it as a submodule. Make sure to have [Docker](https://www.docker.com/) installed and build the openface image.
 
-``` bash
+```bash
 # install dependencies
 npm install
 
+# start the websocket server, will listen at localhost:9000
+npm run start-server
+
 # serve with hot reload at localhost:8080
 npm run dev
-
-# build for production with minification
-npm run build
 ```
 
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Built with
+
+* [Vue.js](https://vuejs.org/)
+* [Rx.js](http://reactivex.io/rxjs/)
+* [pouchdb](https://pouchdb.com/)
