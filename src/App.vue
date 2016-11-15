@@ -47,6 +47,7 @@ import PrimaryButton from './components/PrimaryButton.vue'
 import ErrorMessage from './components/ErrorMessage.vue'
 
 import { identity$, image$, state$, train, recognize, savePerson, dropState } from './faceRecognition'
+import { sendAttendance } from './attendance'
 
 export default {
   name: 'app',
@@ -83,6 +84,7 @@ export default {
     return {
       identity: identity$
         .map(id => this.persons.find(p => p.id === id))
+        .do(person => person ? sendAttendance(person) : _ => _)
         .map(person => {
           this.recognition.status = false
           this.recognition.identityMessage = person ? `Welcome, ${person.name}!` : `Please try again`
