@@ -2,7 +2,7 @@
 
 ## Running
 
-This project currently depends on [openface](https://github.com/cmusatyalab/openface) and has it as a submodule. Make sure to have [Docker](https://www.docker.com/) installed and build the openface image.
+This project currently depends on [openface](https://github.com/cmusatyalab/openface) and uses its websocket server from web demo. Make sure to have [Docker](https://www.docker.com/) installed and build the openface image.
 
 ```bash
 # install dependencies
@@ -18,5 +18,5 @@ npm run dev
 ## Built with
 
 * [Vue.js](https://vuejs.org/)
-* [Rx.js](http://reactivex.io/rxjs/)
-* [pouchdb](https://pouchdb.com/)
+* [RxJS](http://reactivex.io/rxjs/)
+* [PouchDB](https://pouchdb.com/)
