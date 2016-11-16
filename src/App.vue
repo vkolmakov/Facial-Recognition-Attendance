@@ -39,6 +39,8 @@
 
 <script>
 import VueWebcam from 'vue-webcam'
+import Rx from 'rxjs/Rx'
+
 import IdentityMessage from './components/IdentityMessage.vue'
 import ProgressBar from './components/ProgressBar.vue'
 import SignInButton from './components/SignInButton.vue'
@@ -46,8 +48,9 @@ import ToggleMenu from './components/ToggleMenu.vue'
 import PrimaryButton from './components/PrimaryButton.vue'
 import ErrorMessage from './components/ErrorMessage.vue'
 
-import { identity$, image$, state$, train, recognize, savePerson, dropState } from './faceRecognition'
-import { sendAttendance } from './attendance'
+import { identity$, image$, state$, error$ as faceRecognitionError$,
+         train, recognize, savePerson, dropState } from './faceRecognition'
+import { sendAttendance, error$ as attendanceLoggerError$ } from './attendance'
 
 export default {
   name: 'app',
@@ -97,6 +100,11 @@ export default {
           ? s.persons[0].name
           : ''
       }),
+
+      error: Rx.Observable.merge(
+        faceRecognitionError$,
+        attendanceLoggerError$,
+      ).do(err => this.setErrorMessage(err))
     }
   },
 
@@ -104,6 +112,11 @@ export default {
     clearMessages () {
       this.recognition.identityMessage = ''
       this.errorMessage = ''
+    },
+
+    setErrorMessage (err) {
+      console.error(err)
+      this.errorMessage = err
     },
 
     toggleMenu () {
@@ -138,7 +151,7 @@ export default {
 
       const onStart = () => this.training.status = true
       const onProgress = (next) => this.training.progress = next
-      const onError = (err) => this.errorMessage = err
+      const onError = (err) => this.setErrorMessage(err)
       const onComplete = () => {
         this.training.progress = 0
         this.training.status = false

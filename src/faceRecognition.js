@@ -41,7 +41,7 @@ export const state$ = socket.open$
   })
 
 export const error$ = socket.error$
-  .map(err => `A problem occurred with face recognition socket.`)
+  .map(err => 'A problem occurred with face recognition socket.')
 
 
 export const savePerson = ({ name, id }) => {
