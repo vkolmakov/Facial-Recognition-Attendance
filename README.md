@@ -15,6 +15,10 @@ npm run start-server
 npm run dev
 ```
 
+## Quick Demo
+
+![demo](/screenshots/demo.gif)
+
 ## Built with
 
 * [Vue.js](https://vuejs.org/)
